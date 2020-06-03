@@ -1,4 +1,4 @@
-import fetch from 'unfetch'
+import fetch from 'node-fetch'
 
 type TCache = {
   lastUpdate?: number
