@@ -53,10 +53,20 @@ export default async (req, res) => {
   )
 
   if (Date.now() - cache.lastUpdate < 6 * HOUR_IN_MILISECONDS) {
-    res.end(JSON.stringify(cache.videos))
+    res.end(
+      JSON.stringify({
+        fromCache: true,
+        videos: cache.videos,
+      })
+    )
   } else {
     const { data, status } = await fetchVideos(ENDPOINT)
 
-    res.status(status).send(JSON.stringify(data))
+    res.status(status).send(
+      JSON.stringify({
+        fromCache: false,
+        videos: data,
+      })
+    )
   }
 }
