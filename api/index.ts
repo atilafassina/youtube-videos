@@ -1,19 +1,11 @@
 import fetch from 'node-fetch'
-
-type TCache = {
-  lastUpdate?: number
-  videos: any[]
-}
+import { NowRequest, NowResponse } from '@now/node'
 
 const TOKEN = process.env.YOUTUBE_TOKEN
-const SCOPE_LEAK = 'UCfCr8kE8AL0tzDPbX1KX_gg'
-const ENDPOINT = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${SCOPE_LEAK}&key=${TOKEN}&type=video&order=date&maxResults=6`
+const CHANNEL = process.env.CHANNEL_ID
+const ENDPOINT = (channel: string) =>
+  `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channel}&key=${TOKEN}&type=video&order=date&maxResults=6`
 const HOUR_IN_SECONDS = 60 * 60
-const HOUR_IN_MILISECONDS = 1000 * HOUR_IN_SECONDS
-let cache: TCache = {
-  lastUpdate: undefined,
-  videos: [],
-}
 
 const fetchVideos = async (url) => {
   const resp = await fetch(url)
@@ -29,20 +21,13 @@ const fetchVideos = async (url) => {
     }
   }
 
-  let videos = data.items
-
-  cache = {
-    lastUpdate: Date.now(),
-    videos,
-  }
-
-  return {
-    status: 200,
-    data: videos,
-  }
+  return data.items
 }
 
-export default async (req, res) => {
+export default async (req: NowRequest, res: NowResponse) => {
+  const channelId =
+    typeof req.query.channel === 'string' ? req.query.channel : CHANNEL
+
   res.setHeader('Content-type', 'application/json')
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader(
@@ -50,21 +35,6 @@ export default async (req, res) => {
     `s-maxage=${6 * HOUR_IN_SECONDS}, stale-while-revalidate`
   )
 
-  if (Date.now() - cache.lastUpdate < 6 * HOUR_IN_MILISECONDS) {
-    res.end(
-      JSON.stringify({
-        fromCache: true,
-        videos: cache.videos,
-      })
-    )
-  } else {
-    const { data, status } = await fetchVideos(ENDPOINT)
-
-    res.status(status).send(
-      JSON.stringify({
-        fromCache: false,
-        videos: data,
-      })
-    )
-  }
+  const videos = await fetchVideos(ENDPOINT(channelId))
+  res.status(200).send(JSON.stringify(videos))
 }
