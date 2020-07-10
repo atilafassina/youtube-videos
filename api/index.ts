@@ -16,9 +16,7 @@ let cache: TCache = {
 }
 
 const fetchVideos = async (url) => {
-  const resp = await fetch(url, {
-    referrer: 'atila.io',
-  })
+  const resp = await fetch(url)
   const data = await resp.json()
 
   if (data.error) {
