@@ -15,8 +15,3 @@
 | `maxResults` | `6`     | the maximum number of results in the response |
 
 Check Youtube V3 docs for the [options](https://developers.google.com/youtube/v3/docs/search/list) on these parameters.
-
-## Deploy
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/project?template=https://github.com/atilafassina/youtube-videos)
-[![Deploy with Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/atilafassina/youtube-videos)

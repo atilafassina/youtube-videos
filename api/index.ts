@@ -1,13 +1,13 @@
-import fetch from 'node-fetch'
-import { NowRequest, NowResponse } from '@now/node'
-
 const TOKEN = process.env.YOUTUBE_TOKEN
 const CHANNEL = process.env.CHANNEL_ID
-const ENDPOINT = (channel: string) =>
-  `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channel}&key=${TOKEN}&type=video&order=date&maxResults=6`
-const HOUR_IN_SECONDS = 60 * 60
+const ENDPOINT = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL}&key=${TOKEN}&type=video&order=date&maxResults=9`
+const DAY_IN_SECONDS = 24 * 60 * 60
 
-const fetchVideos = async (url) => {
+export const config = {
+  runtime: 'edge',
+}
+
+const fetchVideos = async (url: string) => {
   const resp = await fetch(url)
   const data = await resp.json()
 
@@ -24,17 +24,16 @@ const fetchVideos = async (url) => {
   return data.items
 }
 
-export default async (req: NowRequest, res: NowResponse) => {
-  const channelId =
-    typeof req.query.channel === 'string' ? req.query.channel : CHANNEL
+export default async () => {
+  const videos = await fetchVideos(ENDPOINT)
 
-  res.setHeader('Content-type', 'application/json')
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader(
-    'Cache-Control',
-    `s-maxage=${6 * HOUR_IN_SECONDS}, stale-while-revalidate`
-  )
-
-  const videos = await fetchVideos(ENDPOINT(channelId))
-  res.status(200).send(JSON.stringify(videos))
+  return new Response(JSON.stringify(videos), {
+    headers: {
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': `s-maxage=${DAY_IN_SECONDS}, stale-while-revalidate=${
+        3 * DAY_IN_SECONDS
+      }`,
+    },
+  })
 }
