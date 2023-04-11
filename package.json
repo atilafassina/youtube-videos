@@ -1,19 +1,25 @@
 {
   "name": "youtube-videos",
-  "version": "1.0.0",
+  "version": "link",
   "description": "api to fetch videos from scopeleak",
   "main": "index.js",
   "repository": "git@github.com:atilafassina/youtube-videos.git",
   "author": "Atila Fassina <atila@fassina.eu>",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "env": "vercel env pull"
+  },
   "prettier": {
     "semi": false,
     "singleQuote": true
   },
   "dependencies": {
-    "@now/node": "^1.6.1",
-    "node-fetch": "^2.6.0",
+    "@vercel/edge": "^0.3.2",
     "prettier": "^2.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "vercel": "^28.18.4"
   }
 }
