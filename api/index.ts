@@ -1,3 +1,5 @@
+import fallback from './_fallback'
+
 const TOKEN = process.env.YOUTUBE_TOKEN
 const CHANNEL = process.env.CHANNEL_ID
 const ENDPOINT = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL}&key=${TOKEN}&type=video&order=date&maxResults=9`
@@ -27,6 +29,19 @@ const fetchVideos = async (url: string) => {
 export default async () => {
   const videos = await fetchVideos(ENDPOINT)
 
+  if (videos.status.code != 200) {
+    return new Response(JSON.stringify(fallback), {
+      headers: {
+        'Content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': `s-maxage=${DAY_IN_SECONDS}, stale-while-revalidate=${
+          3 * DAY_IN_SECONDS
+        }`,
+        'x-api': 'fallback',
+      },
+    })
+  }
+
   return new Response(JSON.stringify(videos), {
     headers: {
       'Content-type': 'application/json',
@@ -34,6 +49,7 @@ export default async () => {
       'Cache-Control': `s-maxage=${DAY_IN_SECONDS}, stale-while-revalidate=${
         3 * DAY_IN_SECONDS
       }`,
+      'x-api': 'ytube',
     },
   })
 }
