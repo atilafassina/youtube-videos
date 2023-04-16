@@ -1,4 +1,4 @@
-import fallback from './_fallback'
+import fallback from '../lib/fallback'
 
 const TOKEN = process.env.YOUTUBE_TOKEN
 const CHANNEL = process.env.CHANNEL_ID
