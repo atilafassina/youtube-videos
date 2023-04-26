@@ -1,4 +1,4 @@
-import { buildClient } from '@xata.io/client'
+import { BaseClient } from '@xata.io/client'
 import type {
   BaseClientOptions,
   SchemaInference,
@@ -48,14 +48,18 @@ export type DatabaseSchema = {
   appearances: AppearancesRecord
 }
 
-const defaultOptions = {
+// class XataClient extends buildClient()<DatabaseSchema> {
+//   constructor(options?: BaseClientOptions) {
+//     super(
+//       {
+//         ...options,
+//         databaseURL: 'https://atila-r3s7jg.eu-west-1.xata.sh/db/atilaio',
+//       },
+//       tables
+//     )
+//   }
+// }
+
+export const xata = new BaseClient({
   databaseURL: 'https://atila-r3s7jg.eu-west-1.xata.sh/db/atilaio',
-}
-
-class XataClient extends buildClient()<DatabaseSchema> {
-  constructor(options?: BaseClientOptions) {
-    super(options, tables)
-  }
-}
-
-export const xata = new XataClient(defaultOptions)
+})
