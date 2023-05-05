@@ -1,10 +1,7 @@
 import { xata } from '../lib/xata'
-import { CACHE_CONTROL_HEADER } from '../lib/config'
+import { CACHE_CONTROL_HEADER, EDGE_CONFIG } from '../lib/config'
 
-export const config = {
-  runtime: 'edge',
-  regions: ['fra1'],
-}
+export const config = EDGE_CONFIG
 
 export default async () => {
   const { records } = await xata.db.articles
@@ -19,7 +16,6 @@ export default async () => {
       'Content-type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Cache-Control': CACHE_CONTROL_HEADER,
-      'x-api': 'ytube',
     },
   })
 }

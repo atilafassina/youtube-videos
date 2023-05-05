@@ -1,19 +1,15 @@
 {
-  "name": "youtube-videos",
-  "version": "dev",
-  "description": "api to fetch videos from scopeleak",
-  "main": "index.js",
+  "name": "api.atila.io",
+  "description": "api to feed xata.io",
   "repository": "git@github.com:atilafassina/youtube-videos.git",
-  "author": "Atila Fassina <atila@fassina.eu>",
+  "author": {
+    "name": "@AtilaFassina",
+    "url": "https://atila.io"
+  },
   "license": "MIT",
   "private": true,
   "scripts": {
-    "env": "vercel env pull",
     "xata:codegen": "pnpx @xata.io/cli@latest codegen --output lib/xata.codegen.ts"
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
   },
   "dependencies": {
     "@vercel/edge": "^0.3.2",
